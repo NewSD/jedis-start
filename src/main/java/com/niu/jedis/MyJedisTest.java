@@ -32,7 +32,7 @@ public class MyJedisTest {
 
 
     @Before
-    public void setUp(){
+    public void setUp() {
         jedis = new Jedis("127.0.0.1");
         Jedis jedis2 = RedisConnection.getJedis();
 //        System.out.println(jedis2);
@@ -40,16 +40,16 @@ public class MyJedisTest {
     }
 
     @Test
-    public void testString(){
+    public void testString() {
         RedisOps.set("user:1", "sisu");
         String user = RedisOps.get("user:1");
         Assert.assertEquals("sisu", user);
     }
 
     @Test
-    public void testObject(){
-        RedisOps.setObject("user:2",new User(2,"lumia"));
-        User user = (User)RedisOps.getObject("user:2");
+    public void testObject() {
+        RedisOps.setObject("user:2", new User(2, "lumia"));
+        User user = (User) RedisOps.getObject("user:2");
         Assert.assertEquals("lumia", user.getName());
     }
 
@@ -63,10 +63,10 @@ public class MyJedisTest {
 
 
     @Test
-    public void testString2(){
-        jedis.set("name","codehole");
+    public void testString2() {
+        jedis.set("name", "codehole");
 //        System.out.println(jedis.get("name"));
-        jedis.mset("name1","boy","name2","girl","name3","unknown");
+        jedis.mset("name1", "boy", "name2", "girl", "name3", "unknown");
         List<String> mget = jedis.mget("name1", "name2", "name3");
 //        System.out.println(mget);
 //        System.out.println(jedis.get("name4"));
@@ -77,25 +77,48 @@ public class MyJedisTest {
 //        System.out.println(jedis.exists("name2"));
 //        System.out.println(jedis.exists("name","name1"));
 //        System.out.println(jedis.exists("name2","name1"));
-        System.out.println(jedis.exists("name22","name12"));
+        System.out.println(jedis.exists("name22", "name12"));
 
     }
 
     @Test
-    public void testList(){
+    public void testExpire() {
+//        设置5秒过期
+//        jedis.expire("name1",5);
+//        jedis.setnx("name","coldhole");
+//        jedis.setex("name",6,"good");
+//        jedis.set("age","30");
+//        jedis.incr("age");
+//        System.out.println(jedis.get("age"));
+//        jedis.incrBy("age",5);
+//        System.out.println(jedis.get("age"));
+        jedis.set("colehole", String.valueOf(Long.MAX_VALUE));
+        //JedisDataException: ERR increment or decrement would overflow
+//        jedis.incr("colehole");
+
+    }
+
+    @Test
+    public void testList() {
         Jedis jedis = RedisConnection.getJedis();
-        jedis.ltrim("books",1,0);
-        jedis.rpush("books","python","java","golang");
+        jedis.ltrim("books", 1, 0);
+//        rpush lpop 队列
+        jedis.rpush("books", "python", "java", "golang");
         Long cnt = jedis.llen("books");
         System.out.println(cnt);
         System.out.println(jedis.lpop("books"));
         System.out.println(jedis.lpop("books"));
         System.out.println(jedis.lpop("books"));
         System.out.println(jedis.lpop("books"));
-
+//  rpush rpop 栈
+        jedis.rpush("goods","hello","words","he");
+        System.out.println(jedis.rpop("goods"));
+        System.out.println(jedis.rpop("goods"));
+        System.out.println(jedis.rpop("goods"));
+        System.out.println(jedis.rpop("goods"));
     }
 
-        @Test
+    @Test
     public void test1() {
         String keys = "name";
         // 删数据
@@ -108,11 +131,11 @@ public class MyJedisTest {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         jedis.set("person".getBytes(), serialize(userMessage));
-        byte[] byt=jedis.get("person".getBytes());
-        Object obj=unserizlize(byt);
-        if(obj instanceof UserMessage){
+        byte[] byt = jedis.get("person".getBytes());
+        Object obj = unserizlize(byt);
+        if (obj instanceof UserMessage) {
             System.out.println(obj);
         }
     }
