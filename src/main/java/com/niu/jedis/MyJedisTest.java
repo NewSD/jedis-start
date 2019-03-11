@@ -95,6 +95,13 @@ public class MyJedisTest {
         //JedisDataException: ERR increment or decrement would overflow
 //        jedis.incr("colehole");
 
+        jedis.set("colehole","yoyo");
+        jedis.expire("colehole",600);
+        System.out.println(jedis.ttl("colehole"));
+        jedis.set("colehole","yoyo");
+        System.out.println(jedis.ttl("colehole"));
+
+
     }
 
     @Test
@@ -171,6 +178,8 @@ public class MyJedisTest {
         }
 
     }
+
+
 
     @Test
     public void test1() {
