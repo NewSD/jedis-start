@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ami on 2019/3/11.
@@ -116,6 +117,24 @@ public class MyJedisTest {
         System.out.println(jedis.rpop("goods"));
         System.out.println(jedis.rpop("goods"));
         System.out.println(jedis.rpop("goods"));
+    }
+
+    @Test
+    public void testHash(){
+        jedis.hset("hash_books","java","think in java");
+        jedis.hset("hash_books","golang","concurrency in go");
+        jedis.hset("hash_books","python","python cookbook");
+        Map<String, String> hash_books = jedis.hgetAll("hash_books");
+        System.out.println(hash_books);
+        jedis.hlen("hash_books");
+        jedis.hget("hash_books","java");
+        jedis.hset("hash_books","golang","learning go programming");
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("java","effective java");
+        hashMap.put("python","learning python");
+        jedis.hmset("books",hashMap);
+
     }
 
     @Test
