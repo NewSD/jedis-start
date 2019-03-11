@@ -3,12 +3,12 @@ package com.niu.jedis;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.Bean;
 import redis.clients.jedis.Jedis;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by ami on 2019/3/11.
@@ -35,7 +35,7 @@ public class MyJedisTest {
     public void setUp(){
         jedis = new Jedis("127.0.0.1");
         Jedis jedis2 = RedisConnection.getJedis();
-        System.out.println(jedis2);
+//        System.out.println(jedis2);
 
     }
 
@@ -61,6 +61,39 @@ public class MyJedisTest {
         Assert.assertEquals("xiaoming", user.getName());
     }
 
+
+    @Test
+    public void testString2(){
+        jedis.set("name","codehole");
+//        System.out.println(jedis.get("name"));
+        jedis.mset("name1","boy","name2","girl","name3","unknown");
+        List<String> mget = jedis.mget("name1", "name2", "name3");
+//        System.out.println(mget);
+//        System.out.println(jedis.get("name4"));
+//        System.out.println(jedis.exists("name"));
+        System.out.println(jedis.del("name"));
+//        System.out.println(jedis.exists("name"));
+//        System.out.println(jedis.exists("name1"));
+//        System.out.println(jedis.exists("name2"));
+//        System.out.println(jedis.exists("name","name1"));
+//        System.out.println(jedis.exists("name2","name1"));
+        System.out.println(jedis.exists("name22","name12"));
+
+    }
+
+    @Test
+    public void testList(){
+        Jedis jedis = RedisConnection.getJedis();
+        jedis.ltrim("books",1,0);
+        jedis.rpush("books","python","java","golang");
+        Long cnt = jedis.llen("books");
+        System.out.println(cnt);
+        System.out.println(jedis.lpop("books"));
+        System.out.println(jedis.lpop("books"));
+        System.out.println(jedis.lpop("books"));
+        System.out.println(jedis.lpop("books"));
+
+    }
 
         @Test
     public void test1() {
