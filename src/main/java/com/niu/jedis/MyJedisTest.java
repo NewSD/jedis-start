@@ -6,10 +6,7 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ami on 2019/3/11.
@@ -139,6 +136,19 @@ public class MyJedisTest {
         jedis.hincrBy("user-laoqian","age",1);
         System.out.println(jedis.hget("user-laoqian","age"));
 
+    }
+
+    @Test
+    public void testSet(){
+        jedis.sadd("bookst","python");
+        jedis.sadd("bookst","python");
+        jedis.sadd("bookst","java","golang");
+        Set<String> books = jedis.smembers("bookst");
+        System.out.println(books);
+        System.out.println(jedis.sismember("bookst","java"));
+        System.out.println(jedis.sismember("bookst","rust"));
+        System.out.println(jedis.scard("bookst"));
+        System.out.println(jedis.spop("bookst"));
     }
 
     @Test
