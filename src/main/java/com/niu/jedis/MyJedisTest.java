@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Tuple;
 
 import java.io.*;
 import java.util.*;
@@ -109,7 +110,7 @@ public class MyJedisTest {
         System.out.println(jedis.lpop("books"));
         System.out.println(jedis.lpop("books"));
 //  rpush rpop 栈
-        jedis.rpush("goods","hello","words","he");
+        jedis.rpush("goods", "hello", "words", "he");
         System.out.println(jedis.rpop("goods"));
         System.out.println(jedis.rpop("goods"));
         System.out.println(jedis.rpop("goods"));
@@ -117,38 +118,58 @@ public class MyJedisTest {
     }
 
     @Test
-    public void testHash(){
-        jedis.hset("hash_books","java","think in java");
-        jedis.hset("hash_books","golang","concurrency in go");
-        jedis.hset("hash_books","python","python cookbook");
+    public void testHash() {
+        jedis.hset("hash_books", "java", "think in java");
+        jedis.hset("hash_books", "golang", "concurrency in go");
+        jedis.hset("hash_books", "python", "python cookbook");
         Map<String, String> hash_books = jedis.hgetAll("hash_books");
         System.out.println(hash_books);
         jedis.hlen("hash_books");
-        jedis.hget("hash_books","java");
-        jedis.hset("hash_books","golang","learning go programming");
+        jedis.hget("hash_books", "java");
+        jedis.hset("hash_books", "golang", "learning go programming");
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("java","effective java");
-        hashMap.put("python","learning python");
-        jedis.hmset("books",hashMap);
+        hashMap.put("java", "effective java");
+        hashMap.put("python", "learning python");
+        jedis.hmset("books", hashMap);
 
-        jedis.hset("user-laoqian","age","29");
-        jedis.hincrBy("user-laoqian","age",1);
-        System.out.println(jedis.hget("user-laoqian","age"));
+        jedis.hset("user-laoqian", "age", "29");
+        jedis.hincrBy("user-laoqian", "age", 1);
+        System.out.println(jedis.hget("user-laoqian", "age"));
 
     }
 
     @Test
-    public void testSet(){
-        jedis.sadd("bookst","python");
-        jedis.sadd("bookst","python");
-        jedis.sadd("bookst","java","golang");
+    public void testSet() {
+        jedis.sadd("bookst", "python");
+        jedis.sadd("bookst", "python");
+        jedis.sadd("bookst", "java", "golang");
         Set<String> books = jedis.smembers("bookst");
         System.out.println(books);
-        System.out.println(jedis.sismember("bookst","java"));
-        System.out.println(jedis.sismember("bookst","rust"));
+        System.out.println(jedis.sismember("bookst", "java"));
+        System.out.println(jedis.sismember("bookst", "rust"));
         System.out.println(jedis.scard("bookst"));
         System.out.println(jedis.spop("bookst"));
+    }
+
+    @Test
+    public void testZset() {
+        jedis.zadd("booksZset",9.0,"think in java");
+        jedis.zadd("booksZset",8.9,"java concurrency");
+        jedis.zadd("booksZset",8.6,"java cookbook");
+        System.out.println(jedis.zrange("booksZset",0,-1));
+        System.out.println(jedis.zrevrange("booksZset",0,-1));
+
+        System.out.println(jedis.zcard("booksZset"));
+        System.out.println(jedis.zscore("booksZset","java concurrency"));
+        System.out.println(jedis.zrangeByScore("booksZset",0,8.91));
+
+        Set<Tuple> booksZset = jedis.zrangeByScoreWithScores("booksZset", "-inf", "8.91");
+        for (Tuple tuple : booksZset){
+            System.out.println(tuple.getElement());
+            System.out.println(tuple.getScore());
+        }
+
     }
 
     @Test
