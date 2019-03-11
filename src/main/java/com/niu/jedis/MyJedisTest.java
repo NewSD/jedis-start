@@ -135,6 +135,10 @@ public class MyJedisTest {
         hashMap.put("python","learning python");
         jedis.hmset("books",hashMap);
 
+        jedis.hset("user-laoqian","age","29");
+        jedis.hincrBy("user-laoqian","age",1);
+        System.out.println(jedis.hget("user-laoqian","age"));
+
     }
 
     @Test
